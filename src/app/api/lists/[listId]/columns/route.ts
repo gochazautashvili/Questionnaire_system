@@ -1,12 +1,11 @@
 import { getErrorMessage } from "@/lib/utils";
 import { getListColumnsForForm } from "@/server/db/list";
-import { NextRequest } from "next/server";
 
 interface Props {
   params: { listId: string };
 }
 
-export async function GET(req: NextRequest, { params: { listId } }: Props) {
+export async function GET(req: Request, { params: { listId } }: Props) {
   try {
     const columns = await getListColumnsForForm(listId);
 
