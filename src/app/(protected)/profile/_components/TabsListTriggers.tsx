@@ -9,7 +9,7 @@ interface TabsListTriggersProps {
 }
 
 const TabsListTriggers = ({ role }: TabsListTriggersProps) => {
-  const [page, setPage] = useQueryState("profile_page");
+  const [_, setPage] = useQueryState("profile_page");
 
   const { workWithUsers } = getWhatCanUsers(role);
 
