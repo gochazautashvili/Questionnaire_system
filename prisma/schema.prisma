@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id String @id @unique @default(uuid())
+
+  name          String
+  email         String @unique
+  hash_password String
+
+  role UserRole @default(OWNER)
+
+  verified_email Boolean @default(false)
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String
+
+  createdAt DateTime @default(now())
+
+  @@index([id])
+  @@map("users")
+}
+
+model Organization {
+  id String @id @unique @default(uuid())
+
+  name String
+
+  users      User[]
+  workspaces Workspace[]
+
+  @@map("organizations")
+}
+
+model Workspace {
+  id String @id @unique @default(uuid())
+
+  title String
+
+  lists List[]
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String
+
+  createdAt DateTime @default(now())
+
+  @@index([id])
+  @@map("workspaces")
+}
+
+model List {
+  id String @id @unique @default(uuid())
+
+  title       String
+  description String
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String
+
+  form    Form?
+  columns Column[]
+  rows    Row[]
+
+  type ListType @default(PUBLIC)
+
+  createdAt DateTime @default(now())
+
+  @@index([workspaceId, id])
+  @@map("lists")
+}
+
+model Form {
+  id String @id @unique @default(uuid())
+
+  title    String
+  subtitle String
+
+  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId String @unique
+
+  columns Column[]
+  links   Link[]
+
+  createdAt DateTime @default(now())
+
+  @@index([listId])
+  @@map("forms")
+}
+
+model Column {
+  id String @id @unique @default(uuid())
+
+  name     String
+  type     ColumnType    @default(TEXT)
+  use_type ColumnUseType @default(LIST)
+
+  createdAt DateTime @default(now())
+
+  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId String
+
+  form   Form?   @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId String?
+
+  choices Choice[]
+
+  @@index([listId])
+  @@map("columns")
+}
+
+model Row {
+  id String @id @unique @default(uuid())
+
+  content String
+
+  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId String
+
+  createdAt DateTime @default(now())
+
+  @@index([listId])
+  @@map("rows")
+}
+
+model Link {
+  id String @id @unique @default(uuid())
+
+  name     String
+  location String
+  code     String @unique @default(uuid())
+
+  form   Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId String
+
+  createdAt DateTime @default(now())
+
+  @@index([formId, id])
+  @@map("links")
+}
+
+model Choice {
+  id String @id @unique @default(uuid())
+
+  name  String
+  color String @default("#5D1281")
+
+  column   Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  columnId String
+
+  @@map("choices")
+}
+
+// enums
+
+enum ListType {
+  ORGANIZATION
+  PUBLIC
+}
+
+enum ColumnUseType {
+  FORM
+  LIST
+  BOTH
+}
+
+enum ColumnType {
+  TEXT
+  USERS
+  CHOICE
+  RATING
+  BIG_TEXT
+  DATETIME
+}
+
+enum RowType {
+  FORM
+  LIST
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
