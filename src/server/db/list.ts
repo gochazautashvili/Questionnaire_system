@@ -135,7 +135,7 @@ export const edit_listDb = ({ values, listId }: TEditList) => {
 };
 
 export const edit_rowDb = (content: TListData) => {
-  const { id, listId, ...data } = content;
+  const { id, ...data } = content;
 
   return db.row.update({
     where: { id },
