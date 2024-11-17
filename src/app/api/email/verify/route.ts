@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
 
     setCookies({ name: "user_session", value: user.id });
 
-    return Response.json("success");
+    return new Response("success");
   } catch (error) {
     return new Response(getErrorMessage(error), { status: 500 });
   }
