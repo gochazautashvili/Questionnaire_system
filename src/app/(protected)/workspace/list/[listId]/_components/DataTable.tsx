@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Column, List } from "@prisma/client";
+import { Column, List, UserRole } from "@prisma/client";
 import { TListResponse } from "@/lib/types";
 import { getColumns } from "./columns/columns";
 import { useQuery } from "@tanstack/react-query";
@@ -25,11 +25,12 @@ interface DataTableProps {
   list: List;
   columns: Column[];
   isPublic: boolean;
+  role: UserRole;
 }
 
-export function DataTable({ columns, list, isPublic }: DataTableProps) {
+export function DataTable({ columns, list, isPublic, role }: DataTableProps) {
   const { page } = usePage();
-  const table_columns = getColumns(columns, isPublic);
+  const table_columns = getColumns(columns, isPublic, role);
 
   const { data, isLoading } = useQuery({
     queryKey: ["data_table", list.id, page],

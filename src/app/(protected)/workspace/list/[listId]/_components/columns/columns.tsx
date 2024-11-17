@@ -1,18 +1,19 @@
 "use client";
 import { TListData } from "@/lib/types";
-import { Column } from "@prisma/client";
+import { Column, UserRole } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import ColumnHeader from "./ColumnHeader";
 import TableElements from "../TableElements";
 import RowMoreButton from "../rows/RowMoreButton";
-import useUser from "@/hooks/use-user";
 import { getWhatCanUsers } from "@/lib/utils";
 import LinkElement from "../elements/LinkElement";
 
-export const getColumns = (columns: Column[], isPublic: boolean) => {
-  const user = useUser();
-
-  const { canActions } = getWhatCanUsers(user.role);
+export const getColumns = (
+  columns: Column[],
+  isPublic: boolean,
+  role: UserRole,
+) => {
+  const { canActions } = getWhatCanUsers(role);
 
   const generatedColumns = columns.map((column) => {
     return {

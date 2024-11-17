@@ -48,6 +48,7 @@ export default async function ListPage({ params: { listId } }: ListPageProps) {
       </div>
       <Separator className="mb-4 mt-2 rounded-md bg-emerald-500" />
       <DataTable
+        role={user.role}
         isPublic={isPublic}
         columns={list.columns}
         list={list}
