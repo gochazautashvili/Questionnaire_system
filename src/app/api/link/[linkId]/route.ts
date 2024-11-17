@@ -13,7 +13,7 @@ export async function GET(req: Request, { params: { linkId } }: Props) {
       return new Response("Link not found", { status: 404 });
     }
 
-    return Response.json(link);
+    return Response.json(link, { status: 200 });
   } catch (error) {
     return new Response(getErrorMessage(error), { status: 500 });
   }
