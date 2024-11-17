@@ -26,6 +26,7 @@ const ListColumns = (props: ListColumnsProps) => {
     <div className="grid max-h-[400px] grid-cols-2 gap-3 overflow-y-auto">
       {columns?.map((column) => (
         <FormLabel
+          key={column.id}
           htmlFor={column.id}
           className="flex w-full items-center gap-1 rounded-md bg-slate-100 px-3 py-3"
         >

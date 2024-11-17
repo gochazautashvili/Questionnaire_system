@@ -24,7 +24,7 @@ const BuildFormPage = async ({ params: { listId } }: BuildFormPageProps) => {
           <p className="text-sm font-semibold text-gray-500">{form.subtitle}</p>
         </div>
         {form.columns.map((column) => (
-          <div className="flex flex-col gap-2">
+          <div key={column.id} className="flex flex-col gap-2">
             <div className="flex items-center justify-between gap-2">
               <Label className="font-semibold">{column.name}</Label>
               <ColumnSettings isPublic={true} column={column} />

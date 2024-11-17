@@ -38,7 +38,7 @@ const Users = async ({ organizationId, userId }: UsersProps) => {
   return (
     <div className="flex flex-wrap gap-5">
       {users.map((user) => (
-        <UserCard user={user} currentUser={currentUser} />
+        <UserCard key={user.id} user={user} currentUser={currentUser} />
       ))}
     </div>
   );
