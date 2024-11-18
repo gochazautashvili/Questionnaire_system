@@ -22,6 +22,7 @@ const WorkspaceLists = async ({ workspaceId }: WorkspaceListsProps) => {
         >
           <div className="flex items-center justify-between">
             <Link
+              prefetch={true}
               href={`/workspace/list/${list.id}`}
               className="line-clamp-1 text-xl font-bold"
             >
