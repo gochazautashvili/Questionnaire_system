@@ -89,7 +89,7 @@ export function DataTable({ columns, list, isPublic, role }: DataTableProps) {
           {!isLoading && table.getRowModel().rows?.length < 1 && (
             <TableRow>
               <TableCell
-                colSpan={columns.length + 1}
+                colSpan={columns.length + 3}
                 className="h-24 text-center"
               >
                 No results.
@@ -110,7 +110,7 @@ interface TableLoadingProps {
 const TableLoading = ({ length }: TableLoadingProps) => {
   return (
     <TableRow>
-      <TableCell colSpan={length + 1} className="h-24">
+      <TableCell colSpan={length + 3} className="h-24">
         <Loader2 className="mx-auto size-7 animate-spin text-primary" />
       </TableCell>
     </TableRow>
