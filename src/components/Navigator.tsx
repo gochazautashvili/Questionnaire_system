@@ -14,7 +14,7 @@ const Navigator = (props: NavigatorProps) => {
 
   return (
     <Button {...buttonProps} asChild variant="outline" size="sm">
-      <Link href={url}>
+      <Link href={url} prefetch={true}>
         {left && <ArrowLeft />}
         {name}
         {right && <ArrowRight />}
