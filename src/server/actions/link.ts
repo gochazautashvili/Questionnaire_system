@@ -1,6 +1,6 @@
 "use server";
 import { getErrorMessage } from "@/lib/utils";
-import { link_schema, TLinkSchema } from "../validations";
+import { link_schema, TGeneratedForm, TLinkSchema } from "../validations";
 import {
   create_linkDb,
   delete_linkDb,
@@ -32,13 +32,14 @@ export const create_link = async (props: TCreateLink) => {
 };
 
 export const send_user_response = async (props: TUserResponse) => {
-  const { linkId, values, listId } = props;
+  const { linkId, values, listId, linkType } = props;
 
   try {
     const data = {
       ...values,
       link_name: linkId,
       link_location: linkId,
+      link_type: linkType,
     };
 
     const jsonData = JSON.stringify(data);
@@ -119,11 +120,8 @@ interface TEditLink {
 }
 
 interface TUserResponse {
-  values: TValue;
+  values: TGeneratedForm;
+  linkType: string;
   listId: string;
   linkId: string;
-}
-
-interface TValue {
-  [x: string]: string;
 }

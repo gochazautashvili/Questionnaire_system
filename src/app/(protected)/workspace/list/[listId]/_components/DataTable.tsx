@@ -55,7 +55,7 @@ export function DataTable({ columns, list, isPublic, role }: DataTableProps) {
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead
-                    className="text-nowrap border-r border-gray-400 last:border-none"
+                    className="text-nowrap border-r border-gray-300 last:border-none"
                     key={header.id}
                   >
                     {header.isPlaceholder
@@ -80,7 +80,10 @@ export function DataTable({ columns, list, isPublic, role }: DataTableProps) {
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell className="border-r border-gray-400" key={cell.id}>
+                  <TableCell
+                    className="text-nowrap border-r border-b border-gray-300"
+                    key={cell.id}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -89,7 +92,7 @@ export function DataTable({ columns, list, isPublic, role }: DataTableProps) {
           {!isLoading && table.getRowModel().rows?.length < 1 && (
             <TableRow>
               <TableCell
-                colSpan={columns.length + 3}
+                colSpan={columns.length + 4}
                 className="h-24 text-center"
               >
                 No results.
@@ -110,7 +113,7 @@ interface TableLoadingProps {
 const TableLoading = ({ length }: TableLoadingProps) => {
   return (
     <TableRow>
-      <TableCell colSpan={length + 3} className="h-24">
+      <TableCell colSpan={length + 4} className="h-24">
         <Loader2 className="mx-auto size-7 animate-spin text-primary" />
       </TableCell>
     </TableRow>

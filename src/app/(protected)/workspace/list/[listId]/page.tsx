@@ -33,7 +33,7 @@ export default async function ListPage({ params: { listId } }: ListPageProps) {
           {list.form && canActions && isPublic && (
             <Navigator
               right
-              name="List form"
+              name="Form"
               url={`/workspace/list/${list.id}/form`}
             />
           )}

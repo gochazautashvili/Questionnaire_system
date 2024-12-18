@@ -28,6 +28,7 @@ import { create_list } from "@/server/actions/list";
 import { toast } from "@/hooks/use-toast";
 import { List } from "@prisma/client";
 import { Checkbox } from "@/components/ui/checkbox";
+import ImageUploadButton from "../../list/[listId]/_components/ImageUploadButton";
 
 interface CreateListDialogProps {
   workspaceId: string;
@@ -43,7 +44,8 @@ const CreateListDialog = ({ workspaceId, list }: CreateListDialogProps) => {
     defaultValues: {
       title: list?.title || "",
       description: list?.description || "",
-      isPublic: true,
+      isPublic: list?.type === "PUBLIC" ? true : false,
+      background: list?.background || "",
     },
   });
 
@@ -106,6 +108,27 @@ const CreateListDialog = ({ workspaceId, list }: CreateListDialogProps) => {
                   <FormLabel>List description*</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter list description..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="background"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>List image*</FormLabel>
+                  <FormControl className="w-full">
+                    <ImageUploadButton
+                      type="list"
+                      width={500}
+                      height={300}
+                      url={field.value}
+                      id={list?.id || ""}
+                      name="Upload image"
+                      onUpload={(url) => field.onChange(url)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

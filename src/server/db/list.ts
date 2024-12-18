@@ -46,7 +46,7 @@ export const getListColumns = (listId: string) => {
 };
 
 export const getChoices = (columnId: string) => {
-  return db.choice.findMany({ where: { columnId } });
+  return db.choice.findMany({ where: { columnId }, orderBy: { type: "desc" } });
 };
 
 export const getListColumnsForForm = (listId: string) => {
@@ -56,22 +56,28 @@ export const getListColumnsForForm = (listId: string) => {
 };
 
 // POST
-export const create_listDb = ({ values, workspaceId }: TCreateList) => {
+export const create_listDb = ({
+  values,
+  workspaceId,
+  withForm,
+}: TCreateList) => {
   const { isPublic, ...data } = values;
 
   return db.list.create({
     data: {
       ...data,
       workspaceId,
-      columns: {
-        createMany: {
-          data: [
-            { name: "Test column 1", type: "TEXT" },
-            { name: "Test column 2", type: "TEXT" },
-            { name: "Test column 3", type: "TEXT" },
-          ],
-        },
-      },
+      columns: withForm
+        ? {}
+        : {
+            createMany: {
+              data: [
+                { name: "Test column 1", type: "TEXT" },
+                { name: "Test column 2", type: "TEXT" },
+                { name: "Test column 3", type: "TEXT" },
+              ],
+            },
+          },
       type: isPublic ? "PUBLIC" : "ORGANIZATION",
     },
     select: { id: true },
@@ -93,6 +99,7 @@ export const create_formDb = (listId: string) => {
           ],
         },
       },
+      form_styles: { create: {} },
     },
   });
 };
@@ -107,13 +114,16 @@ export const create_rowDb = ({ content, listId }: TCreateRow) => {
 };
 
 export const create_column = ({ data, listId, formId }: TCreateColumn) => {
-  const { name, type, withFormColumn } = data;
+  const { name, type, withFormColumn, rate_range, rate_type, required } = data;
 
   return db.column.create({
     data: {
       name,
       type,
       listId,
+      required,
+      rate_type,
+      rate_range,
       formId: withFormColumn ? formId : undefined,
       use_type: withFormColumn ? "BOTH" : "LIST",
     },
@@ -128,9 +138,11 @@ export const create_choiceDb = (data: TCreateChoice) => {
 
 // EDIT
 export const edit_listDb = ({ values, listId }: TEditList) => {
+  const { description, title, background } = values;
+
   return db.list.update({
     where: { id: listId },
-    data: { ...values },
+    data: { description, title, background },
   });
 };
 
@@ -155,13 +167,16 @@ export const edit_full_column = ({
   data,
   formId,
 }: TEditFullColumn) => {
-  const { name, type, withFormColumn } = data;
+  const { name, type, withFormColumn, rate_range, rate_type, required } = data;
 
   return db.column.update({
     where: { id: columnId },
     data: {
       name,
       type,
+      required,
+      rate_type,
+      rate_range,
       use_type: withFormColumn ? "BOTH" : "LIST",
       formId: withFormColumn ? formId : undefined,
     },
@@ -221,6 +236,7 @@ const getListColumnsFn = (listId: string) => {
 interface TCreateList {
   values: TList_schema;
   workspaceId: string;
+  withForm: boolean;
 }
 
 interface TEditList {
@@ -257,6 +273,7 @@ interface TGetRows {
 }
 
 interface TCreateChoice {
+  type: "NORMAL" | "OTHER";
   columnId: string;
   name: string;
 }

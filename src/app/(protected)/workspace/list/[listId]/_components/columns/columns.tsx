@@ -7,6 +7,7 @@ import TableElements from "../TableElements";
 import RowMoreButton from "../rows/RowMoreButton";
 import { getWhatCanUsers } from "@/lib/utils";
 import LinkElement from "../elements/LinkElement";
+import LinkTypeElement from "../elements/LinkTypeElement";
 
 export const getColumns = (
   columns: Column[],
@@ -24,9 +25,9 @@ export const getColumns = (
       cell: ({ row }) => (
         <TableElements
           row={row}
+          column={column}
           type={column.type}
           isPublic={isPublic}
-          columnId={column.id}
         />
       ),
     };
@@ -52,6 +53,12 @@ const generateStaticColumns = (canActions: boolean, isPUblic: boolean) => {
     ),
   };
 
+  const linkType: ColumnDef<TListData> = {
+    accessorKey: "link_type",
+    header: () => <h1 className="font-bold text-black">Link type</h1>,
+    cell: ({ row }) => <LinkTypeElement value={row.getValue("link_type")} />,
+  };
+
   const actions: ColumnDef<TListData> = {
     accessorKey: "actions",
     header: () => <h1 className="text-center font-bold text-black">Actions</h1>,
@@ -59,7 +66,12 @@ const generateStaticColumns = (canActions: boolean, isPUblic: boolean) => {
   };
 
   if (canActions && isPUblic) {
-    return [linkName, linkLocation, actions] as ColumnDef<TListData>[];
+    return [
+      linkName,
+      linkLocation,
+      linkType,
+      actions,
+    ] as ColumnDef<TListData>[];
   }
 
   if (!isPUblic) {

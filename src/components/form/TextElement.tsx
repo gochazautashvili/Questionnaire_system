@@ -1,13 +1,20 @@
-import { FieldValues, UseFormRegister } from "react-hook-form";
 import { Input } from "../ui/input";
 
 interface TextElementProps {
-  register?: UseFormRegister<FieldValues>;
-  columnId?: string;
+  value?: string;
+  border_color: string;
+  onChange?: () => void;
 }
 
-const TextElement = ({ register, columnId }: TextElementProps) => {
-  return <Input {...register?.(columnId || "")} placeholder="Enter here..." />;
+const TextElement = ({ onChange, value, border_color }: TextElementProps) => {
+  return (
+    <Input
+      value={value}
+      onChange={onChange}
+      placeholder="Enter here..."
+      style={{ borderColor: border_color }}
+    />
+  );
 };
 
 export default TextElement;

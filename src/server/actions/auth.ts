@@ -13,6 +13,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
 
+// POST
 export const sign_up = async (values: TSign_up_schema) => {
   try {
     const { data, error } = sign_up_schema.safeParse(values);
@@ -119,8 +120,27 @@ export const sign_out = () => {
   redirect("/auth");
 };
 
-// Delete
+export const sign_in_demo_user = async () => {
+  try {
+    const existUser = await getUserByEmail("gochazautashvili2017@gmail.com");
 
+    if (!existUser) {
+      return { success: false, message: "User not found!" };
+    }
+
+    setCookies({ name: "user_session", value: existUser.id });
+
+    return {
+      success: true,
+      message: "User sign in successfully :)",
+      redirect: true,
+    };
+  } catch (error) {
+    return { success: false, message: getErrorMessage(error) };
+  }
+};
+
+// Delete
 export const delete_account = async () => {
   try {
     const user = await getUser();

@@ -51,7 +51,7 @@ export const create_list = async (data: TCreateList) => {
         return { success: false, message: "Max lists length is 5" };
       }
 
-      const list = await create_listDb({ values, workspaceId });
+      const list = await create_listDb({ values, workspaceId, withForm });
 
       if (withForm && values.isPublic) {
         await create_formDb(list.id);
@@ -311,6 +311,7 @@ interface TColumnAction {
 interface TCreateChoice {
   columnId: string;
   name: string;
+  type: "NORMAL" | "OTHER";
 }
 
 interface TSelectChoice {

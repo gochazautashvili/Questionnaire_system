@@ -15,9 +15,11 @@ export const link_include = {
   form: {
     include: {
       columns: {
+        orderBy: { order: "asc" },
         include: { choices: true },
         where: { NOT: { type: "USERS" } },
       },
+      form_styles: true,
     },
   },
 } satisfies Prisma.LinkInclude;
@@ -25,3 +27,41 @@ export const link_include = {
 export type TLinkInclude = Prisma.LinkGetPayload<{
   include: typeof link_include;
 }>;
+
+export const form_include = {
+  columns: {
+    orderBy: { order: "asc" },
+    include: { choices: true },
+    where: { NOT: { OR: [{ type: "USERS" }, { use_type: "LIST" }] } },
+  },
+  form_styles: true,
+} satisfies Prisma.FormInclude;
+
+export type TFormInclude = Prisma.FormGetPayload<{
+  include: typeof form_include;
+}>;
+
+export type TStyles = {
+  border_size: number;
+  border_color: string;
+  form_border_radius: number;
+
+  background: string;
+  form_background: string;
+  text_color: string;
+  title_size: number;
+  subtitle_size: number;
+
+  logo?: string;
+  background_image?: string;
+  form_background_image?: string;
+
+  button_text: string;
+  button_color: string;
+};
+
+export type TUploadImageButtonType =
+  | "background_image"
+  | "form_background_image"
+  | "logo"
+  | "list";

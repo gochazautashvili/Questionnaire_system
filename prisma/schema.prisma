@@ -72,6 +72,8 @@ model List {
 
   createdAt DateTime @default(now())
 
+  background String
+
   @@index([workspaceId, id])
   @@map("lists")
 }
@@ -88,6 +90,8 @@ model Form {
   columns Column[]
   links   Link[]
 
+  form_styles FormStyles?
+
   createdAt DateTime @default(now())
 
   @@index([listId])
@@ -100,8 +104,13 @@ model Column {
   name     String
   type     ColumnType    @default(TEXT)
   use_type ColumnUseType @default(LIST)
+  required Boolean       @default(true)
+
+  rate_range Int      @default(5)
+  rate_type  RateType @default(STARS)
 
   createdAt DateTime @default(now())
+  order     Int      @default(autoincrement())
 
   list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId String
@@ -149,12 +158,40 @@ model Choice {
   id String @id @unique @default(uuid())
 
   name  String
-  color String @default("#5D1281")
+  color String     @default("#5D1281")
+  type  ChoiceType @default(NORMAL)
 
   column   Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
   columnId String
 
   @@map("choices")
+}
+
+model FormStyles {
+  id String @id @unique @default(uuid())
+
+  border_size        Int    @default(1)
+  border_color       String @default("#000")
+  form_border_radius Int    @default(8)
+
+  background      String @default("#fff")
+  form_background String @default("#fff")
+  text_color      String @default("#000")
+
+  title_size    Int @default(20)
+  subtitle_size Int @default(14)
+
+  logo                  String?
+  background_image      String?
+  form_background_image String?
+
+  button_text  String @default("Submit")
+  button_color String @default("#6F61EA")
+
+  Form   Form   @relation(fields: [formId], references: [id])
+  formId String @unique
+
+  @@map("form_styles")
 }
 
 // enums
@@ -175,8 +212,10 @@ enum ColumnType {
   USERS
   CHOICE
   RATING
+  NUMBER
   BIG_TEXT
   DATETIME
+  MULTIPLE_CHOICE
 }
 
 enum RowType {
@@ -189,4 +228,15 @@ enum UserRole {
   ADMIN
   MEMBER
   VIEWER
+}
+
+enum RateType {
+  STARS
+  HEART
+  EMOJIS
+}
+
+enum ChoiceType {
+  OTHER
+  NORMAL
 }

@@ -19,11 +19,12 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { create_user } from "@/server/actions/user";
-import { person_schema, roles, TPersonSchema } from "@/server/validations";
+import { person_schema, TPersonSchema } from "@/server/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRoundPlus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
+import { user_roles } from "@/constants";
 
 interface CreateUserProps {
   organizationId: string;
@@ -36,7 +37,7 @@ const CreateUser = ({ organizationId, userId }: CreateUserProps) => {
     defaultValues: {
       name: "",
       email: "",
-      role: "MEMBER"
+      role: "MEMBER",
     },
   });
 
@@ -111,7 +112,7 @@ const CreateUser = ({ organizationId, userId }: CreateUserProps) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {roles.map((role) => (
+                  {user_roles.map((role) => (
                     <SelectItem key={role.value} value={role.value}>
                       {role.name}
                     </SelectItem>

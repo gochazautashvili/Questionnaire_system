@@ -17,6 +17,7 @@ import { sign_in } from "@/server/actions/auth";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import PasswordInput from "@/components/PasswordInput";
+import DemoUserAuthButton from "./DemoUserAuthButton";
 
 const SignIn = () => {
   const router = useRouter();
@@ -77,9 +78,12 @@ const SignIn = () => {
             </FormItem>
           )}
         />
-        <LoadingButton isLoading={isLoading} type="submit" className="self-end">
-          Sign in
-        </LoadingButton>
+        <div className="flex gap-2 self-end">
+          <DemoUserAuthButton />
+          <LoadingButton isLoading={isLoading} type="submit">
+            Sign in
+          </LoadingButton>
+        </div>
       </form>
     </Form>
   );

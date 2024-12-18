@@ -7,16 +7,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { column_schema, TColumnSchema, types } from "@/server/validations";
+import { column_schema, TColumnSchema } from "@/server/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Column } from "@prisma/client";
+import { Column, ColumnType } from "@prisma/client";
 import { Pen, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -30,13 +29,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { column_action } from "@/server/actions/list";
 import { toast } from "@/hooks/use-toast";
 import useListId from "@/hooks/use-listId";
 import LoadingButton from "@/components/LoadingButton";
-import Choices from "../../../../../../../components/Choices";
-import { Checkbox } from "@/components/ui/checkbox";
+import Choices from "../../../../../../../components/form/choices/Choices";
+import ColumnTypeElements from "./ColumnTypeElements";
+import FormCheckbox from "./Checkbox";
+import { column_types } from "@/constants";
 
 interface ColumnEditSheetProps {
   column?: Column;
@@ -47,12 +48,17 @@ interface ColumnEditSheetProps {
 const ColumnSheet = ({ column, formId, isPublic }: ColumnEditSheetProps) => {
   const listId = useListId();
   const [isLoading, startTransition] = useTransition();
+  const [type, setType] = useState<ColumnType>(column?.type || "TEXT");
+
   const form = useForm<TColumnSchema>({
     resolver: zodResolver(column_schema),
     defaultValues: {
       name: column?.name || "",
       type: column?.type || "TEXT",
-      withFormColumn: column?.use_type === "BOTH" || false,
+      required: column?.required || true,
+      rate_range: column?.rate_range || 5,
+      rate_type: column?.rate_type || "STARS",
+      withFormColumn: column?.use_type === "BOTH" || formId ? true : false,
     },
   });
 
@@ -117,7 +123,10 @@ const ColumnSheet = ({ column, formId, isPublic }: ColumnEditSheetProps) => {
                 <FormItem>
                   <FormLabel>Column type*</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value: ColumnType) => {
+                      field.onChange(value);
+                      setType(value);
+                    }}
                     defaultValue={field.value}
                   >
                     <FormControl>
@@ -126,43 +135,37 @@ const ColumnSheet = ({ column, formId, isPublic }: ColumnEditSheetProps) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {types.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
-                          {type.name}
-                        </SelectItem>
-                      ))}
+                      {column_types.map((type) => {
+                        return (
+                          <SelectItem key={type.value} value={type.value}>
+                            {type.name}
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
-                  {!column && form.getValues("type") === "CHOICE" && (
-                    <FormDescription>
-                      After create this columns you need to add them choices
-                    </FormDescription>
-                  )}
                   <FormMessage />
                 </FormItem>
               )}
             />
-            {formId && form.getValues("type") !== "USERS" && isPublic && (
-              <FormField
-                control={form.control}
-                name="withFormColumn"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>With form column</FormLabel>
-                      <FormDescription>
-                        This will create column also for form
-                      </FormDescription>
-                    </div>
-                  </FormItem>
-                )}
-              />
+            <ColumnTypeElements
+              type={type}
+              control={form.control}
+              show={!!column}
+            />
+            {formId && type !== "USERS" && isPublic && (
+              <div className="mt-3 flex flex-col gap-2">
+                <FormCheckbox
+                  name="withFormColumn"
+                  control={form.control}
+                  label="Add to the form as well"
+                />
+                <FormCheckbox
+                  name="required"
+                  label="Required"
+                  control={form.control}
+                />
+              </div>
             )}
             <LoadingButton
               className="fixed bottom-10 self-end"
@@ -173,8 +176,8 @@ const ColumnSheet = ({ column, formId, isPublic }: ColumnEditSheetProps) => {
             </LoadingButton>
           </form>
         </Form>
-        {form.getValues("type") === "CHOICE" && column && (
-          <Choices columnId={column.id} />
+        {(type === "CHOICE" || type === "MULTIPLE_CHOICE") && column && (
+          <Choices columnId={column.id} type={type} />
         )}
       </SheetContent>
     </Sheet>

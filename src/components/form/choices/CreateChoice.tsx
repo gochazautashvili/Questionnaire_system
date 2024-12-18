@@ -1,5 +1,5 @@
 import useCreateChoice from "@/hooks/use-create-choice";
-import { Input } from "./ui/input";
+import { Input } from "../../ui/input";
 
 interface CreateChoiceProps {
   columnId: string;
@@ -14,7 +14,7 @@ const CreateChoice = ({ columnId }: CreateChoiceProps) => {
         disabled={isLoading}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            mutate({ columnId, name: e.currentTarget.value });
+            mutate({ columnId, name: e.currentTarget.value, type: "NORMAL" });
           }
         }}
         className="border-none outline-none"

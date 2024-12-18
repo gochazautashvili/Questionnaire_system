@@ -19,27 +19,31 @@ interface ChoiceElementProps {
 
 const ChoiceElement = (props: ChoiceElementProps) => {
   const { columnId, editable, row, selectedId } = props;
-
   const { data, isLoading } = useChoices(columnId);
   const { mutate } = useSelectChoice();
   const user = useUser();
 
-  if (isLoading) {
-    return <Badge>Loading...</Badge>;
-  }
+  if (isLoading) <Badge>Loading...</Badge>;
 
-  if (!data) {
-    return <Badge>Empty</Badge>;
-  }
+  if (!data) return <Badge>Empty</Badge>;
 
-  const selectedChoice = data.find((d) => d.id === selectedId);
+  const selectedChoice = data.find((d) => {
+    if (d.id === selectedId && d.type === "NORMAL") return d;
+
+    if (d.type === "OTHER") return selectedId;
+
+    return null;
+  });
 
   const { canActions } = getWhatCanUsers(user.role);
+
+  const selectedChoiceValue =
+    selectedChoice?.name === "other" ? selectedId : selectedChoice?.name;
 
   if (!canActions || !editable) {
     return (
       <Badge style={{ background: selectedChoice?.color }}>
-        {selectedChoice?.name || "Not Selected"}
+        {selectedChoiceValue || "Not Selected"}
       </Badge>
     );
   }
@@ -48,7 +52,7 @@ const ChoiceElement = (props: ChoiceElementProps) => {
     <Popover>
       <PopoverTrigger>
         <Badge style={{ background: selectedChoice?.color }}>
-          {selectedChoice?.name || "Not Selected"}
+          {selectedChoiceValue || "Not Selected"}
         </Badge>
       </PopoverTrigger>
       <PopoverContent className="flex flex-col items-center gap-1 p-1">

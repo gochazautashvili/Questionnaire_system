@@ -3,6 +3,9 @@ import "./globals.css";
 import QueryProvider from "./QueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "@/app/api/uploadthing/core";
 
 export const metadata: Metadata = {
   title: "Questionnaire system",
@@ -18,12 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <QueryProvider>
-          <NuqsAdapter>
-            {children}
-            <Toaster />
-          </NuqsAdapter>
+          <NuqsAdapter>{children}</NuqsAdapter>
         </QueryProvider>
+        <Toaster />
       </body>
     </html>
   );

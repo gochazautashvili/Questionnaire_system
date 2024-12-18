@@ -1,17 +1,23 @@
-import { FieldValues, UseFormRegister } from "react-hook-form";
 import { Textarea } from "../ui/textarea";
 
 interface TextareaElementProps {
-  register?: UseFormRegister<FieldValues>;
-  columnId?: string;
+  value?: string;
+  border_color: string;
+  onChange?: () => void;
 }
 
-const TextareaElement = ({ register, columnId }: TextareaElementProps) => {
+const TextareaElement = ({
+  onChange,
+  value,
+  border_color,
+}: TextareaElementProps) => {
   return (
     <Textarea
-      {...register?.(columnId || "")}
+      value={value}
+      onChange={onChange}
       className="resize-none"
       placeholder="Enter here..."
+      style={{ borderColor: border_color }}
     />
   );
 };
