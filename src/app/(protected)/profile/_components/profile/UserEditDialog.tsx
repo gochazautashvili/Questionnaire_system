@@ -11,7 +11,7 @@ import {
 import { Pen, UserPen } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { person_schema, roles, TPersonSchema } from "@/server/validations";
+import { person_schema, TPersonSchema } from "@/server/validations";
 import { User } from "@prisma/client";
 import LoadingButton from "@/components/LoadingButton";
 import {
@@ -35,6 +35,7 @@ import { edit_user } from "@/server/actions/user";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 import useUser from "@/hooks/use-user";
+import { user_roles } from "@/constants";
 
 interface UserEditDialogProps {
   user: User;
@@ -133,7 +134,7 @@ const UserEditDialog = ({ user }: UserEditDialogProps) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {roles.map((role) => (
+                      {user_roles.map((role) => (
                         <SelectItem key={role.value} value={role.value}>
                           {role.name}
                         </SelectItem>
