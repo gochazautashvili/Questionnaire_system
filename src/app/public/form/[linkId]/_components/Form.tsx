@@ -98,8 +98,15 @@ const Form = ({ link }: FormProps) => {
           />
         )}
         <form
-          className="relative mx-auto w-full max-w-[700px] overflow-hidden rounded-md bg-stone-50 p-6"
+          className="relative mx-auto w-full max-w-[700px] overflow-hidden p-6"
           onSubmit={generatedForm.handleSubmit(onSubmit)}
+          style={{
+            color: styles.text_color,
+            borderWidth: styles.border_size,
+            borderColor: styles.border_color,
+            background: styles.form_background,
+            borderRadius: styles.form_border_radius,
+          }}
         >
           {styles.form_background_image && (
             <Image
