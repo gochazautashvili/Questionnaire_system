@@ -81,13 +81,66 @@ const ColumnTypeElements = (props: ColumnTypeElementsProps) => {
     case "MULTIPLE_CHOICE":
       return (
         <FormDescription>
-          After create this columns you need to add them choices
+          After create this columns you can add choices
         </FormDescription>
       );
     case "USERS":
       return (
-        <FormDescription>
-          This type is only for list, you can&apos;t create this column on form
+        <FormDescription className="text-orange-600">
+          This type is only for list, you can&apos;t create and use this column
+          in form
+        </FormDescription>
+      );
+    case "NPS":
+      return (
+        <div>
+          <div className="grid grid-cols-2 gap-2">
+            <FormField
+              control={control}
+              name="nps_start"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Start*</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value}
+                      placeholder="Start..."
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="nps_end"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>End*</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value}
+                      placeholder="End..."
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormDescription className="text-orange-600">
+            This type is only for user responses
+          </FormDescription>
+        </div>
+      );
+    case "MATRIX":
+      return (
+        <FormDescription className="text-orange-600">
+          This type is only for user responses
         </FormDescription>
       );
     default:

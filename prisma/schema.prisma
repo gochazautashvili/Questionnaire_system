@@ -108,6 +108,8 @@ model Column {
 
   rate_range Int      @default(5)
   rate_type  RateType @default(STARS)
+  nps_start  String   @default("Start")
+  nps_end    String   @default("End")
 
   createdAt DateTime @default(now())
   order     Int      @default(autoincrement())
@@ -208,8 +210,10 @@ enum ColumnUseType {
 }
 
 enum ColumnType {
+  NPS
   TEXT
   USERS
+  MATRIX
   CHOICE
   RATING
   NUMBER

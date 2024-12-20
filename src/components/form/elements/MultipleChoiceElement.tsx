@@ -1,5 +1,5 @@
+import { Label } from "@/components/ui/label";
 import { Choice } from "@prisma/client";
-import { Label } from "../ui/label";
 
 interface MultipleChoiceElementProps {
   choices: Choice[];

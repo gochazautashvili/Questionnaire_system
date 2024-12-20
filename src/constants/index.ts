@@ -23,6 +23,10 @@ export const column_types: TColumnTypes[] = [
     value: "USERS",
   },
   {
+    name: "Matrix",
+    value: "MATRIX",
+  },
+  {
     name: "Big Text",
     value: "BIG_TEXT",
   },
@@ -33,6 +37,10 @@ export const column_types: TColumnTypes[] = [
   {
     name: "Multiple choices",
     value: "MULTIPLE_CHOICE",
+  },
+  {
+    name: "Net Promoter Score",
+    value: "NPS",
   },
 ];
 

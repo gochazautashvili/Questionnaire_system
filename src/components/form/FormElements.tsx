@@ -1,14 +1,15 @@
 "use client";
 import { Choice, Column } from "@prisma/client";
-import TextElement from "./TextElement";
-import TextareaElement from "./TextareaElement";
-import ChoiceElement from "./ChoiceElement";
-import RatingElement from "./RatingElement";
+import ChoiceElement from "./elements/ChoiceElement";
 import { Input } from "../ui/input";
-import MultipleChoiceElement from "./MultipleChoiceElement";
 import { ControllerRenderProps } from "react-hook-form";
 import { TGeneratedForm } from "@/server/validations";
 import { TStyles } from "@/lib/types";
+import RatingElement from "./elements/RatingElement";
+import NPSElement from "./elements/NPSElement";
+import TextElement from "./elements/TextElement";
+import TextareaElement from "./elements/TextareaElement";
+import MultipleChoiceElement from "./elements/MultipleChoiceElement";
 
 interface FormElementsProps {
   styles: TStyles;
@@ -83,8 +84,24 @@ const FormElements = ({ column, field, styles }: FormElementsProps) => {
           border_color={styles.border_color}
         />
       );
+    case "NPS":
+      return (
+        <NPSElement
+          nps_end={column.nps_end}
+          onChange={onRatingChange}
+          nps_start={column.nps_start}
+          text_color={styles.text_color}
+          border_color={styles.border_color}
+        />
+      );
+    case "MATRIX":
+      return <p>Coming soon!</p>;
     default:
-      return null;
+      return (
+        <p className="text-xs font-semibold text-destructive">
+          Error: Delete this columns and try again.
+        </p>
+      );
   }
 };
 

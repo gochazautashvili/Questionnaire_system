@@ -55,8 +55,10 @@ const ColumnSheet = ({ column, formId, isPublic }: ColumnEditSheetProps) => {
     defaultValues: {
       name: column?.name || "",
       type: column?.type || "TEXT",
+      nps_end: column?.nps_end || "End",
       required: column?.required || true,
       rate_range: column?.rate_range || 5,
+      nps_start: column?.nps_start || "Start",
       rate_type: column?.rate_type || "STARS",
       withFormColumn: column?.use_type === "BOTH" || formId ? true : false,
     },

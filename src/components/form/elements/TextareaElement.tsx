@@ -1,4 +1,4 @@
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 
 interface TextareaElementProps {
   value?: string;

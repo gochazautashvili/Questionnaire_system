@@ -8,6 +8,8 @@ import UserElement from "./elements/UserElement";
 import BigTextElement from "./elements/BigTextElement";
 import RatingElement from "./elements/RatingElement";
 import MultipleChoiceElement from "./elements/MultipleChoiceElement";
+import NPSElement from "./elements/NPSElement";
+import MatrixElement from "./elements/MatrixElement";
 
 interface TableElementsProps {
   row: Row<TListData>;
@@ -88,8 +90,22 @@ const TableElements = ({ row, type, column, isPublic }: TableElementsProps) => {
           selectedId={row.getValue(column.id)}
         />
       );
+    case "NPS":
+      return (
+        <NPSElement
+          nps_end={column.nps_end}
+          nps_start={column.nps_start}
+          value={row.getValue(column.id)}
+        />
+      );
+    case "MATRIX":
+      return <MatrixElement value={row.getValue(column.id)} />;
     default:
-      return "Error";
+      return (
+        <p className="text-xs font-semibold text-destructive">
+          Error: Delete this column and try again.
+        </p>
+      );
   }
 };
 

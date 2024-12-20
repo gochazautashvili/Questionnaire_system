@@ -34,9 +34,9 @@ export function getPromise(delay = 1000) {
   });
 }
 
-export const parseJson = (value: string) => {
+export const parseJson = <T>(value: string) => {
   try {
-    return JSON.parse(value);
+    return JSON.parse(value) as T;
   } catch (error) {
     return null;
   }
@@ -70,11 +70,11 @@ export const getIsDefaultPassword = ({ email, password }: TDefaultPassword) => {
 export const getUserRoleDescription = (role: UserRole) => {
   switch (role) {
     case "ADMIN":
-      return "This user is admin";
+      return "ADMIN: This user only can't delete organization";
     case "MEMBER":
-      return "This user can create edit and delete";
+      return "MEMBER: This user can create edit and delete";
     case "VIEWER":
-      return "This user only can see";
+      return "VIEWER: This user only can see";
     default:
       return null;
   }

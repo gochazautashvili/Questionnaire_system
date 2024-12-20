@@ -40,13 +40,15 @@ export type TList_schema = z.infer<typeof list_schema>;
 
 // list columns
 const columnEnum = z.enum([
+  "NPS",
   "TEXT",
   "USERS",
   "CHOICE",
-  "BIG_TEXT",
-  "DATETIME",
+  "MATRIX",
   "RATING",
   "NUMBER",
+  "BIG_TEXT",
+  "DATETIME",
   "MULTIPLE_CHOICE",
 ]);
 
@@ -57,6 +59,8 @@ export const column_schema = z.object({
   required: z.boolean().default(true),
   rate_range: z.number().min(3).max(10).default(5),
   rate_type: z.enum(["STARS", "EMOJIS", "HEART"]).default("STARS"),
+  nps_start: z.string().default("Start"),
+  nps_end: z.string().default("End"),
 });
 
 export type TColumnSchema = z.infer<typeof column_schema>;
@@ -133,6 +137,16 @@ export const generateFormSchema = (columns: Column[]) => {
           acc[column.id] = column.required
             ? z.number().min(1, message)
             : z.number();
+          break;
+        case "NPS":
+          acc[column.id] = column.required
+            ? z.number().min(1, message)
+            : z.number();
+          break;
+        case "MATRIX":
+          acc[column.id] = column.required
+            ? z.string().min(1, message)
+            : z.string();
           break;
         default:
           throw new Error(`Unsupported type: ${column.type}`);
