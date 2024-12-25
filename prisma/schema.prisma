@@ -106,10 +106,11 @@ model Column {
   use_type ColumnUseType @default(LIST)
   required Boolean       @default(true)
 
-  rate_range Int      @default(5)
-  rate_type  RateType @default(STARS)
-  nps_start  String   @default("Start")
-  nps_end    String   @default("End")
+  rate_range   Int      @default(5)
+  rate_type    RateType @default(STARS)
+  nps_start    String   @default("Start")
+  nps_end      String   @default("End")
+  matrix_table String   @default("")
 
   createdAt DateTime @default(now())
   order     Int      @default(autoincrement())

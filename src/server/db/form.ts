@@ -89,6 +89,13 @@ export const edit_form_stylesDb = ({ formId, styles }: TEditStyles) => {
   });
 };
 
+export const edit_matrixDb = ({ columnId, matrix_table }: TEditMatrix) => {
+  return db.column.update({
+    where: { id: columnId },
+    data: { matrix_table },
+  });
+};
+
 // DELETE
 export const delete_imageDb = ({ id, type }: TDeleteImage) => {
   switch (type) {
@@ -118,6 +125,11 @@ export const delete_imageDb = ({ id, type }: TDeleteImage) => {
 };
 
 // types
+interface TEditMatrix {
+  columnId: string;
+  matrix_table: string;
+}
+
 interface TDeleteImage {
   id: string;
   type: TUploadImageButtonType;

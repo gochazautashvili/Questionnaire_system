@@ -1,3 +1,4 @@
+import { TMatrixContent } from "@/lib/types";
 import { ColumnType, RateType, UserRole } from "@prisma/client";
 import { Heart, Smile, Star } from "lucide-react";
 
@@ -88,6 +89,19 @@ export const colors = [
   "#ea580c",
   "#94a3b8",
 ];
+
+const matrix_table: TMatrixContent = {
+  columns: [
+    { id: "1", value: "column 1" },
+    { id: "2", value: "column 2" },
+  ],
+  rows: [
+    { id: "1", value: "row 1", selectedColumnId: "1" },
+    { id: "2", selectedColumnId: "", value: "row 2" },
+  ],
+};
+
+export const default_matrix_table = JSON.stringify(matrix_table);
 
 export const getRateIconByType = (type: RateType) => {
   switch (type) {

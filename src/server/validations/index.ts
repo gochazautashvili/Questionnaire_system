@@ -1,3 +1,4 @@
+import { default_matrix_table } from "@/constants";
 import { Column } from "@prisma/client";
 import { z } from "zod";
 
@@ -61,6 +62,7 @@ export const column_schema = z.object({
   rate_type: z.enum(["STARS", "EMOJIS", "HEART"]).default("STARS"),
   nps_start: z.string().default("Start"),
   nps_end: z.string().default("End"),
+  matrix_table: z.string().default(default_matrix_table),
 });
 
 export type TColumnSchema = z.infer<typeof column_schema>;

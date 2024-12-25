@@ -60,6 +60,11 @@ export type TStyles = {
   button_color: string;
 };
 
+export type TMatrixContent = {
+  columns: { id: string; value: string }[];
+  rows: { id: string; value: string; selectedColumnId: string }[]
+};
+
 export type TUploadImageButtonType =
   | "background_image"
   | "form_background_image"

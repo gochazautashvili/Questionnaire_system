@@ -8,6 +8,7 @@ import {
   edit_form_stylesDb,
   edit_form_subtitle,
   edit_form_title,
+  edit_matrixDb,
   upload_backgroundDb,
   upload_form_backgroundDb,
   upload_logoDb,
@@ -16,6 +17,7 @@ import { checkWhatUserCan } from "../helpers";
 import { revalidatePath } from "next/cache";
 import { TStyles, TUploadImageButtonType } from "@/lib/types";
 import { delete_file } from "../uploadthing";
+import { CACHE_TAGS, revalidateDbCache } from "@/lib/cache";
 
 // POST
 export const create_form = async (props: TCreateForm) => {
@@ -103,6 +105,17 @@ export const upload_fileDb = async ({ data, url }: TUploadFileDb) => {
   }
 };
 
+export const edit_matrix = async (props: TEditMatrix) => {
+  const { columnId, listId, matrix_table } = props;
+  try {
+    const column = await edit_matrixDb({ columnId, matrix_table });
+
+    revalidateDbCache({ tag: CACHE_TAGS.columns, id: listId });
+    return { success: true, message: "successfully edited", column };
+  } catch (error) {
+    return { success: false, message: getErrorMessage(error) };
+  }
+};
 // DELETE
 export const delete_image = async ({ id, type, url }: TDeleteImage) => {
   try {
@@ -117,6 +130,12 @@ export const delete_image = async ({ id, type, url }: TDeleteImage) => {
 };
 
 // types
+interface TEditMatrix {
+  listId: string;
+  columnId: string;
+  matrix_table: string;
+}
+
 interface TDeleteImage {
   id: string;
   url: string;

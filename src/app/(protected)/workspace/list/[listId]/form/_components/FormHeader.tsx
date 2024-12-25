@@ -38,14 +38,14 @@ const FormHeader = ({ title, subtitle, listId, styles }: FormHeaderProps) => {
         value={title}
         editable={!isLoading}
         className="text-xl font-bold"
-        inputClassname="w-full text-center"
+        class="w-full text-center"
         styles={{ fontSize: styles.title_size }}
         onSubmit={(value) => handelEdit({ value, type: "title" })}
       />
       <EditInput
         value={subtitle}
         editable={!isLoading}
-        inputClassname="w-full text-center"
+        class="w-full text-center"
         styles={{ fontSize: styles.subtitle_size }}
         className="text-sm font-semibold opacity-70"
         onSubmit={(value) => handelEdit({ value, type: "subtitle" })}

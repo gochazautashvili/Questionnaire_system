@@ -10,14 +10,16 @@ import NPSElement from "./elements/NPSElement";
 import TextElement from "./elements/TextElement";
 import TextareaElement from "./elements/TextareaElement";
 import MultipleChoiceElement from "./elements/MultipleChoiceElement";
+import MatrixElement from "./elements/MatrixElement";
 
 interface FormElementsProps {
   styles: TStyles;
+  type: "Edit" | "Public";
   column: Column & { choices: Choice[] };
   field?: ControllerRenderProps<TGeneratedForm, string>;
 }
 
-const FormElements = ({ column, field, styles }: FormElementsProps) => {
+const FormElements = ({ column, field, styles, type }: FormElementsProps) => {
   const onRatingChange = (rate: number) => {
     field?.onChange(rate);
   };
@@ -95,7 +97,16 @@ const FormElements = ({ column, field, styles }: FormElementsProps) => {
         />
       );
     case "MATRIX":
-      return <p>Coming soon!</p>;
+      return (
+        <MatrixElement
+          columnId={column.id}
+          editable={type === "Edit"}
+          onChange={field?.onChange}
+          value={column.matrix_table}
+          text_color={styles.text_color}
+          border_color={styles.border_color}
+        />
+      );
     default:
       return (
         <p className="text-xs font-semibold text-destructive">

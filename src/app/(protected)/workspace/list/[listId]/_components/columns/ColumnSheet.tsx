@@ -37,7 +37,7 @@ import LoadingButton from "@/components/LoadingButton";
 import Choices from "../../../../../../../components/form/choices/Choices";
 import ColumnTypeElements from "./ColumnTypeElements";
 import FormCheckbox from "./Checkbox";
-import { column_types } from "@/constants";
+import { column_types, default_matrix_table } from "@/constants";
 
 interface ColumnEditSheetProps {
   column?: Column;
@@ -60,6 +60,7 @@ const ColumnSheet = ({ column, formId, isPublic }: ColumnEditSheetProps) => {
       rate_range: column?.rate_range || 5,
       nps_start: column?.nps_start || "Start",
       rate_type: column?.rate_type || "STARS",
+      matrix_table: column?.matrix_table || default_matrix_table,
       withFormColumn: column?.use_type === "BOTH" || formId ? true : false,
     },
   });

@@ -38,6 +38,7 @@ export const parseJson = <T>(value: string) => {
   try {
     return JSON.parse(value) as T;
   } catch (error) {
+    console.log(error);
     return null;
   }
 };

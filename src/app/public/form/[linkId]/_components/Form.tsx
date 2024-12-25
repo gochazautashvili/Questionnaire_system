@@ -151,6 +151,7 @@ const Form = ({ link }: FormProps) => {
                       <FormLabel>{column.name}</FormLabel>
                       <FormControl>
                         <FormElements
+                          type="Public"
                           field={field}
                           styles={styles}
                           column={column}

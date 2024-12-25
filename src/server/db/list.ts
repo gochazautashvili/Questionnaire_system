@@ -114,16 +114,12 @@ export const create_rowDb = ({ content, listId }: TCreateRow) => {
 };
 
 export const create_column = ({ data, listId, formId }: TCreateColumn) => {
-  const { name, type, withFormColumn, rate_range, rate_type, required } = data;
+  const { withFormColumn, ...props } = data;
 
   return db.column.create({
     data: {
-      name,
-      type,
       listId,
-      required,
-      rate_type,
-      rate_range,
+      ...props,
       formId: withFormColumn ? formId : undefined,
       use_type: withFormColumn ? "BOTH" : "LIST",
     },
@@ -167,16 +163,12 @@ export const edit_full_column = ({
   data,
   formId,
 }: TEditFullColumn) => {
-  const { name, type, withFormColumn, rate_range, rate_type, required } = data;
+  const { withFormColumn, ...props } = data;
 
   return db.column.update({
     where: { id: columnId },
     data: {
-      name,
-      type,
-      required,
-      rate_type,
-      rate_range,
+      ...props,
       use_type: withFormColumn ? "BOTH" : "LIST",
       formId: withFormColumn ? formId : undefined,
     },

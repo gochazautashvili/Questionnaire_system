@@ -13,23 +13,23 @@ import useUser from "@/hooks/use-user";
 
 interface EditInputProps {
   value: string;
+  class?: string;
   editable?: boolean;
   className?: string;
   styles?: CSSProperties;
-  inputClassname?: string;
   onSubmit: (text: string) => void;
 }
 
 const EditInput = (props: EditInputProps) => {
   const {
     editable = true,
-    onSubmit,
-    value,
     className,
-    inputClassname,
+    onSubmit,
     styles,
+    value,
+    class: inputClass,
   } = props;
-  
+
   const ref: LegacyRef<HTMLInputElement> = useRef(null);
   const [edit, setEdit] = useState(false);
   const [text, setText] = useState(value);
@@ -52,9 +52,10 @@ const EditInput = (props: EditInputProps) => {
         ref={ref}
         autoFocus
         value={text}
+        style={styles}
         onKeyDown={onKeyDown}
         onChange={(e) => setText(e.target.value)}
-        className={cn("h-8 w-auto border-primary outline-none", inputClassname)}
+        className={cn("h-8 w-auto border-primary outline-none", inputClass)}
       />
     );
   }

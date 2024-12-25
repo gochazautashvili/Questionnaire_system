@@ -99,7 +99,12 @@ const Form = ({ form }: FormProps) => {
                   <Label className="font-semibold">{column.name}</Label>
                   <ColumnSettings isPublic={true} column={column} />
                 </div>
-                <FormElements styles={styles} key={column.id} column={column} />
+                <FormElements
+                  type="Edit"
+                  styles={styles}
+                  key={column.id}
+                  column={column}
+                />
               </div>
             ))}
             <Button
