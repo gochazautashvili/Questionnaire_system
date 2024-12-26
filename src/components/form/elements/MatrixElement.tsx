@@ -1,10 +1,11 @@
 import EditInput from "@/components/EditInput";
-import useListId from "@/hooks/use-listId";
 import { toast } from "@/hooks/use-toast";
 import { TMatrixContent } from "@/lib/types";
 import { parseJson } from "@/lib/utils";
 import { edit_matrix } from "@/server/actions/form";
+import { Plus, Trash, X } from "lucide-react";
 import { useState, useTransition } from "react";
+import { v4 as uuidV4 } from "uuid";
 
 interface MatrixElementProps {
   value: string;
@@ -12,7 +13,7 @@ interface MatrixElementProps {
   editable: boolean;
   text_color: string;
   border_color: string;
-  onChange?: () => void;
+  onChange?: (e: string) => void;
 }
 
 interface TOnSelect {
@@ -20,57 +21,56 @@ interface TOnSelect {
   rowId: string;
 }
 
-interface TOnChangeName {
+type TOnEditEnum =
+  | "edit_row"
+  | "edit_column"
+  | "create_row"
+  | "create_column"
+  | "delete_row"
+  | "delete_column";
+
+interface TOnEdit {
   id: string;
   value: string;
-  type: "row" | "column";
+  type: TOnEditEnum;
 }
 
 interface ColumnsProps {
   columns: { id: string; value: string }[];
-  onChange: (e: TOnChangeName) => void;
-  border_color: string;
-  editable: boolean;
-}
-
-interface RowsProps {
-  rows: { id: string; value: string; selectedColumnId: string }[];
-  onChange: (e: TOnChangeName) => void;
+  onChange: (e: TOnEdit) => void;
   border_color: string;
   editable: boolean;
 }
 
 interface BodyProps {
+  editable: boolean;
   border_color: string;
   content: TMatrixContent;
+  onEdit: (e: TOnEdit) => void;
   onSelect: ({ columnId, rowId }: TOnSelect) => void;
 }
 
-const MatrixElement = (props: MatrixElementProps) => {
-  const listId = useListId();
-  const [isLoading, startTransition] = useTransition();
-  const { border_color, text_color, value, columnId, editable } = props;
-  const [content, setContent] = useState(parseJson<TMatrixContent>(value));
+interface TGetContent {
+  content: TMatrixContent;
+  type: TOnEditEnum;
+  value: string;
+  id: string;
+}
 
-  if (!content) return <p>Error. content not found: 404!</p>;
+const getContent = ({ content, type, id, value }: TGetContent) => {
+  let matrix_table: TMatrixContent = content;
 
-  const onSelect = ({ columnId, rowId }: TOnSelect) => {
-    setContent({
-      columns: content.columns,
-      rows: content.rows.map((row) => {
-        if (row.id === rowId) return { ...row, selectedColumnId: columnId };
-
-        return row;
-      }),
-    });
-  };
-
-  const onChangeName = ({ id, type, value }: TOnChangeName) => {
-    if (isLoading && !editable) return;
-
-    let matrix_table: TMatrixContent = content;
-
-    if (type === "column") {
+  switch (type) {
+    case "edit_row":
+      matrix_table = {
+        columns: content.columns,
+        rows: content.rows.map((rows) => {
+          if (rows.id === id) return { ...rows, value };
+          return rows;
+        }),
+      };
+      break;
+    case "edit_column":
       matrix_table = {
         rows: content.rows,
         columns: content.columns.map((column) => {
@@ -79,23 +79,69 @@ const MatrixElement = (props: MatrixElementProps) => {
           return column;
         }),
       };
-    }
-
-    if (type === "row") {
+      break;
+    case "create_column":
       matrix_table = {
-        columns: content.columns,
-        rows: content.rows.map((rows) => {
-          if (rows.id === id) return { ...rows, value };
-          return rows;
-        }),
+        rows: content.rows,
+        columns: [...content.columns, { id: uuidV4(), value }],
       };
-    }
+      break;
+    case "create_row":
+      matrix_table = {
+        rows: [...content.rows, { id: uuidV4(), selectedColumnId: "", value }],
+        columns: content.columns,
+      };
+      break;
+    case "delete_column":
+      matrix_table = {
+        rows: content.rows,
+        columns: content.columns.filter((column) => column.id !== id),
+      };
+      break;
+    case "delete_row":
+      matrix_table = {
+        rows: content.rows.filter((row) => row.id !== id),
+        columns: content.columns,
+      };
+      break;
+    default:
+      break;
+  }
 
-    const data = {
-      listId,
-      columnId,
-      matrix_table: JSON.stringify(matrix_table),
+  return matrix_table;
+};
+
+const MatrixElement = (e: MatrixElementProps) => {
+  const [isLoading, startTransition] = useTransition();
+  const { border_color, text_color, value, columnId, editable, onChange } = e;
+  const [content, setContent] = useState(parseJson<TMatrixContent>(value));
+
+  if (!content) return <p>Error. content not found: 404!</p>;
+
+  const onSelect = ({ columnId, rowId }: TOnSelect) => {
+    const newContent = {
+      columns: content.columns,
+      rows: content.rows.map((row) => {
+        if (row.id === rowId) return { ...row, selectedColumnId: columnId };
+
+        return row;
+      }),
     };
+
+    setContent(newContent);
+    onChange?.(JSON.stringify(newContent));
+  };
+
+  const onEdit = ({ id, type, value }: TOnEdit) => {
+    if (isLoading || !editable) return;
+
+    const prevContent = content;
+    const newContent = getContent({ content, id, type, value });
+
+    setContent(newContent);
+    const matrix_table = JSON.stringify(newContent);
+
+    const data = { columnId, matrix_table };
 
     startTransition(() => {
       edit_matrix(data).then((res) => {
@@ -108,34 +154,50 @@ const MatrixElement = (props: MatrixElementProps) => {
         if (res.column) {
           setContent(parseJson<TMatrixContent>(res.column.matrix_table));
         }
+
+        if (!res.success) setContent(prevContent);
       });
     });
   };
 
   return (
-    <div
-      style={{ color: text_color, borderColor: border_color }}
-      className="flex w-full text-nowrap rounded-sm border"
-    >
-      <Rows
-        border_color={border_color}
-        onChange={onChangeName}
-        rows={content.rows}
-        editable={editable}
-      />
-      <div className="w-full">
+    <div className="overflow-x-auto pb-1">
+      <table
+        style={{ color: text_color, borderColor: border_color }}
+        className="w-full text-nowrap rounded-md border"
+      >
         <Columns
           border_color={border_color}
           columns={content.columns}
-          onChange={onChangeName}
           editable={editable}
+          onChange={onEdit}
         />
         <Body
+          onEdit={onEdit}
           content={content}
+          editable={editable}
           onSelect={onSelect}
           border_color={border_color}
         />
-      </div>
+        <tfoot>
+          <tr>
+            {editable && (
+              <td
+                colSpan={content.columns.length + 2}
+                onClick={() =>
+                  onEdit({ id: "", type: "create_row", value: "new row" })
+                }
+                className="cursor-pointer select-none border-t font-mono font-semibold hover:bg-primary/20"
+                style={{ borderColor: border_color }}
+              >
+                <span className="flex items-center gap-2 px-1">
+                  <Plus className="size-4" /> add row
+                </span>
+              </td>
+            )}
+          </tr>
+        </tfoot>
+      </table>
     </div>
   );
 };
@@ -147,64 +209,100 @@ const Columns = (props: ColumnsProps) => {
   const { border_color, columns, editable, onChange } = props;
 
   return (
-    <div className="flex w-full items-center">
-      {columns.map((column) => (
-        <EditInput
-          editable={editable}
-          key={column.id}
-          value={column.value}
-          onSubmit={(value) =>
-            onChange({ id: column.id, type: "column", value })
-          }
-          styles={{ borderColor: border_color }}
-          className="h-6 w-full border-b border-r px-2"
-          class="h-6 w-full rounded-none bg-none p-0 px-2 shadow-none outline-none"
-        />
-      ))}
-    </div>
+    <thead>
+      <tr>
+        <th
+          style={{ borderColor: border_color }}
+          className="border-b border-r px-2 font-mono text-sm font-bold"
+        >
+          Matrix Table
+        </th>
+        {columns.map((column) => (
+          <th
+            key={column.id}
+            style={{ borderColor: border_color }}
+            className="border-b border-r px-2"
+          >
+            <div className="flex items-center justify-between gap-5">
+              {editable ? (
+                <EditInput
+                  editable={editable}
+                  value={column.value}
+                  onSubmit={(value) =>
+                    onChange({ id: column.id, type: "edit_column", value })
+                  }
+                  class="h-6 rounded-none border-0 bg-none p-0 shadow-none outline-none"
+                />
+              ) : (
+                <span>{column.value}</span>
+              )}
+              {editable && (
+                <X
+                  style={{ color: border_color }}
+                  className="size-4 cursor-pointer hover:scale-110"
+                  onClick={() =>
+                    onChange({
+                      id: column.id,
+                      type: "delete_column",
+                      value: "",
+                    })
+                  }
+                />
+              )}
+            </div>
+          </th>
+        ))}
+        {editable && (
+          <th
+            onClick={() =>
+              onChange({ id: "", type: "create_column", value: "new column" })
+            }
+            className="cursor-pointer border-b px-2 font-mono font-semibold hover:bg-primary/20"
+            style={{ borderColor: border_color }}
+          >
+            <Plus className="size-4" />
+          </th>
+        )}
+      </tr>
+    </thead>
   );
 };
 
-const Rows = (props: RowsProps) => {
-  const { border_color, rows, editable, onChange } = props;
-
-  return (
-    <div className="flex flex-col">
-      <p
-        style={{ borderColor: border_color }}
-        className="flex h-6 items-center justify-center border-b border-r px-2 font-mono text-sm font-semibold"
-      >
-        Matrix
-      </p>
-      {rows.map((row) => (
-        <EditInput
-          key={row.id}
-          value={row.value}
-          editable={editable}
-          className="h-6 border-b border-r px-2"
-          styles={{ borderColor: border_color }}
-          onSubmit={(value) => onChange({ id: row.id, type: "row", value })}
-          class="h-6 rounded-none bg-none p-0 px-2 shadow-none outline-none"
-        />
-      ))}
-    </div>
-  );
-};
-
-const Body = ({ content, border_color, onSelect }: BodyProps) => {
+const Body = (props: BodyProps) => {
+  const { border_color, content, editable, onEdit, onSelect } = props;
   const { columns, rows } = content;
 
   return (
-    <div className="w-full">
+    <tbody>
       {rows.map((row) => {
         return (
-          <div className="flex w-full items-center" key={row.id}>
+          <tr key={row.id}>
+            <td
+              style={{ borderColor: border_color }}
+              className="border-b border-r px-2 text-sm font-medium"
+            >
+              {editable ? (
+                <EditInput
+                  key={row.id}
+                  value={row.value}
+                  editable={editable}
+                  onSubmit={(value) =>
+                    onEdit({ id: row.id, type: "edit_row", value })
+                  }
+                  class="rounded-none border-0 bg-none p-0 py-1 shadow-none outline-none"
+                />
+              ) : (
+                <span style={{ borderColor: border_color }} key={row.id}>
+                  {row.value}
+                </span>
+              )}
+            </td>
             {columns.map((column) => {
               return (
-                <div
+                <td
                   key={column.id}
                   style={{ borderColor: border_color }}
-                  className="flex h-6 w-full items-center border-b border-r px-2"
+                  className="border-b border-r px-2"
                 >
                   <div
                     style={{ borderColor: border_color }}
@@ -217,12 +315,25 @@ const Body = ({ content, border_color, onSelect }: BodyProps) => {
                       <div className="size-3 rounded-full bg-primary" />
                     )}
                   </div>
-                </div>
+                </td>
               );
             })}
-          </div>
+            {editable && (
+              <td
+                onClick={() =>
+                  onEdit({ id: row.id, type: "delete_row", value: "" })
+                }
+                className="cursor-pointer gap-2 border-b px-2 font-mono font-semibold hover:bg-primary/20"
+                style={{ borderColor: border_color }}
+              >
+                <span className="flex items-center gap-2">
+                  <Trash className="size-4" />
+                </span>
+              </td>
+            )}
+          </tr>
         );
       })}
-    </div>
+    </tbody>
   );
 };

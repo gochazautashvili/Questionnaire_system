@@ -92,12 +92,12 @@ export const colors = [
 
 const matrix_table: TMatrixContent = {
   columns: [
-    { id: "1", value: "column 1" },
-    { id: "2", value: "column 2" },
+    { id: "columns_1", value: "column 1" },
+    { id: "columns_2", value: "column 2" },
   ],
   rows: [
-    { id: "1", value: "row 1", selectedColumnId: "1" },
-    { id: "2", selectedColumnId: "", value: "row 2" },
+    { id: "rows_1", value: "row 1", selectedColumnId: "1" },
+    { id: "rows_2", selectedColumnId: "", value: "row 2" },
   ],
 };
 
