@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 
 const PublicLayout = ({ children }: PropsWithChildren) => {
-  return <main>{children}</main>;
+  return <main className="px-3">{children}</main>;
 };
 
 export default PublicLayout;
