@@ -1,8 +1,7 @@
 import { TListData } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, getRateClassName, getRateIconByType } from "@/lib/utils";
 import useEditRow from "../../hooks/useEditRow";
 import { RateType } from "@prisma/client";
-import { getRateClassName, getRateIconByType } from "@/constants";
 
 interface RatingElementProps {
   value: string;
@@ -24,6 +23,7 @@ const RatingElement = (props: RatingElementProps) => {
   };
 
   const Icon = getRateIconByType(rate_type);
+  const className = getRateClassName(rate_type);
 
   return (
     <div className="flex items-center gap-1">
@@ -33,7 +33,7 @@ const RatingElement = (props: RatingElementProps) => {
             onClick={() => handleRate(i)}
             className={cn(
               "size-4",
-              i <= rate && getRateClassName(rate_type),
+              i <= rate && className,
               editable && "cursor-pointer",
             )}
             key={i}

@@ -55,6 +55,12 @@ export const getListColumnsForForm = (listId: string) => {
   });
 };
 
+export const getListAllRow = (listId: string) => {
+  return db.row.findMany({
+    where: { listId },
+  });
+};
+
 // POST
 export const create_listDb = ({
   values,
@@ -220,7 +226,6 @@ const getListColumnsFn = (listId: string) => {
       listId,
       NOT: { use_type: "FORM" },
     },
-    select: { id: true },
   });
 };
 

@@ -1,6 +1,5 @@
 "use client";
-import { getRateClassName, getRateIconByType } from "@/constants";
-import { cn } from "@/lib/utils";
+import { cn, getRateClassName, getRateIconByType } from "@/lib/utils";
 import { RateType } from "@prisma/client";
 import { useState } from "react";
 
@@ -15,22 +14,27 @@ const RatingElement = (props: RatingElementProps) => {
   const [rate, setRate] = useState(0);
 
   const Icon = getRateIconByType(rate_type);
+  const className = getRateClassName(rate_type);
 
   return (
     <div className="flex items-center gap-1">
-      {Array.from({ length: rate_range }).map((_, i) => (
-        <Icon
-          onClick={() => {
-            onRatingChange(i);
-            setRate(i);
-          }}
-          key={i}
-          className={cn(
-            "size-5 cursor-pointer stroke-1",
-            rate >= i && getRateClassName(rate_type),
-          )}
-        />
-      ))}
+      {Array.from({ length: rate_range }).map((_, i) => {
+        const currentRate = i + 1;
+
+        return (
+          <Icon
+            onClick={() => {
+              onRatingChange(currentRate);
+              setRate(currentRate);
+            }}
+            key={i}
+            className={cn(
+              "size-5 cursor-pointer stroke-1",
+              rate >= currentRate && className,
+            )}
+          />
+        );
+      })}
     </div>
   );
 };

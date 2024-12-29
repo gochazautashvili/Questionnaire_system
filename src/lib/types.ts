@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Column, Prisma } from "@prisma/client";
 
 export type TListData = {
   id: string;
@@ -62,7 +62,11 @@ export type TStyles = {
 
 export type TMatrixContent = {
   columns: { id: string; value: string }[];
-  rows: { id: string; value: string; selectedColumnId: string }[]
+  rows: { id: string; value: string; selectedColumnId: string }[];
+};
+
+export type TRateDashboardData = Column & {
+  total_rate: number;
 };
 
 export type TUploadImageButtonType =

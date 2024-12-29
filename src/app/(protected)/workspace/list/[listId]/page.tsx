@@ -44,14 +44,18 @@ export default async function ListPage({ params: { listId } }: ListPageProps) {
             />
           )}
           {canActions && !isPublic && <CreateRowButton listId={list.id} />}
+          <Navigator
+            name="Dashboard"
+            url={`/workspace/list/${list.id}/dashboard`}
+          />
         </div>
       </div>
       <Separator className="mb-4 mt-2 rounded-md bg-emerald-500" />
       <DataTable
+        list={list}
         role={user.role}
         isPublic={isPublic}
         columns={list.columns}
-        list={list}
       />
     </div>
   );

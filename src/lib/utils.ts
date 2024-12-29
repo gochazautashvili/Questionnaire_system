@@ -3,10 +3,11 @@ import { twMerge } from "tailwind-merge";
 import { Resend } from "resend";
 import { AxiosError } from "axios";
 import { randomUUID } from "crypto";
-import { UserRole } from "@prisma/client";
+import { RateType, UserRole } from "@prisma/client";
 import Resizer from "react-image-file-resizer";
 import jwt from "jsonwebtoken";
 import emailjs from "@emailjs/browser";
+import { Heart, Smile, Star } from "lucide-react";
 
 export const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
@@ -127,6 +128,31 @@ export const sendEmails_V2 = ({ email }: TSendEmails) => {
   return emailjs.send(SERVICE_ID, TEMPLATE_ID, data, { publicKey: PUBLIC_KEY });
 };
 
+export const getRateIconByType = (type: RateType) => {
+  switch (type) {
+    case "STARS":
+      return Star;
+    case "EMOJIS":
+      return Smile;
+    case "HEART":
+      return Heart;
+    default:
+      return Star;
+  }
+};
+
+export const getRateClassName = (type: RateType) => {
+  switch (type) {
+    case "STARS":
+      return "fill-yellow-500 text-yellow-500";
+    case "EMOJIS":
+      return "fill-yellow-500";
+    case "HEART":
+      return "fill-red-500 text-red-500";
+    default:
+      return "fill-yellow-500 text-yellow-500";
+  }
+};
 // types
 interface TSendEmails {
   email: string;

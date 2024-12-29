@@ -16,14 +16,49 @@ import {
   edit_full_column,
   edit_listDb,
   edit_rowDb,
+  getListAllRow,
   getListColumns,
   getListCount,
   select_choiceDb,
 } from "../db/list";
 import { CACHE_TAGS, revalidateDbCache } from "@/lib/cache";
-import { TListData } from "@/lib/types";
+import { TListData, TRateDashboardData } from "@/lib/types";
 import { checkWhatUserCan, sendEmails } from "../helpers";
 import { getUserById } from "../db/user";
+
+// GET
+export const getListRatingData = async (listId: string) => {
+  try {
+    const [columns, rows] = await Promise.all([
+      getListColumns(listId),
+      getListAllRow(listId),
+    ]);
+
+    const data: TRateDashboardData[] = [];
+
+    columns.forEach((column) => {
+      if (column.type === "RATING") {
+        let total_rate = 0;
+
+        rows.forEach((row) => {
+          const content = parseJson<TRowContent>(row.content);
+
+          if (!content) return;
+
+          const value = content[column.id];
+
+          if (typeof value === "number") total_rate += value;
+        });
+
+        data.push({ ...column, total_rate });
+      }
+    });
+
+    return data;
+  } catch (_) {
+    return [];
+  }
+};
 
 // POST
 export const create_list = async (data: TCreateList) => {
@@ -282,6 +317,8 @@ export const delete_column = async ({ columnId, listId }: TDeleteColumn) => {
 };
 
 // types
+type TRowContent = { [x: string]: string | number };
+
 interface TCreateList {
   values: TList_schema;
   workspaceId: string;

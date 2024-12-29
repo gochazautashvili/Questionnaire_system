@@ -1,6 +1,5 @@
 import { TMatrixContent } from "@/lib/types";
 import { ColumnType, RateType, UserRole } from "@prisma/client";
-import { Heart, Smile, Star } from "lucide-react";
 
 export const column_types: TColumnTypes[] = [
   {
@@ -103,31 +102,6 @@ const matrix_table: TMatrixContent = {
 
 export const default_matrix_table = JSON.stringify(matrix_table);
 
-export const getRateIconByType = (type: RateType) => {
-  switch (type) {
-    case "STARS":
-      return Star;
-    case "EMOJIS":
-      return Smile;
-    case "HEART":
-      return Heart;
-    default:
-      return Star;
-  }
-};
-
-export const getRateClassName = (type: RateType) => {
-  switch (type) {
-    case "STARS":
-      return "fill-yellow-500 text-yellow-500";
-    case "EMOJIS":
-      return "fill-yellow-500";
-    case "HEART":
-      return "fill-red-500 text-red-500";
-    default:
-      return "fill-yellow-500 text-yellow-500";
-  }
-};
 
 // types
 interface TColumnTypes {

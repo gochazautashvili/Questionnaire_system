@@ -48,6 +48,7 @@
     "react-image-file-resizer": "^0.4.8",
     "react-qr-code": "^2.0.15",
     "react-use": "^17.5.1",
+    "recharts": "^2.15.0",
     "resend": "^4.0.1-alpha.0",
     "sharp": "^0.33.5",
     "tailwind-merge": "^2.5.4",
