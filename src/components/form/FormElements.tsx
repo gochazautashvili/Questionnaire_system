@@ -55,6 +55,7 @@ const FormElements = ({ column, field, styles, type }: FormElementsProps) => {
           rate_type={column.rate_type}
           rate_range={column.rate_range}
           onRatingChange={onRatingChange}
+          border_color={styles.border_color}
         />
       );
     case "DATETIME":

@@ -144,13 +144,13 @@ export const getRateIconByType = (type: RateType) => {
 export const getRateClassName = (type: RateType) => {
   switch (type) {
     case "STARS":
-      return "fill-yellow-500 text-yellow-500";
+      return "#eeff1b";
     case "EMOJIS":
-      return "fill-yellow-500";
+      return "#eeff1b";
     case "HEART":
-      return "fill-red-500 text-red-500";
+      return "red";
     default:
-      return "fill-yellow-500 text-yellow-500";
+      return "#eeff1b";
   }
 };
 // types

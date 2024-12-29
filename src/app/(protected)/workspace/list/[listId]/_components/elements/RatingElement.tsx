@@ -23,7 +23,6 @@ const RatingElement = (props: RatingElementProps) => {
   };
 
   const Icon = getRateIconByType(rate_type);
-  const className = getRateClassName(rate_type);
 
   return (
     <div className="flex items-center gap-1">
@@ -32,12 +31,11 @@ const RatingElement = (props: RatingElementProps) => {
 
         return (
           <Icon
+            style={{
+              fill: rate >= currentRate ? getRateClassName(rate_type) : "",
+            }}
             onClick={() => handleRate(i)}
-            className={cn(
-              "size-4",
-              rate >= currentRate && `${className}`,
-              editable && "cursor-pointer",
-            )}
+            className={cn("size-4", editable && "cursor-pointer")}
             key={i}
           />
         );
