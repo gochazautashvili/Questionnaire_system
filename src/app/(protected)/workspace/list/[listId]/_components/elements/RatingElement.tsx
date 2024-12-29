@@ -28,12 +28,14 @@ const RatingElement = (props: RatingElementProps) => {
   return (
     <div className="flex items-center gap-1">
       {Array.from({ length: rate_range }).map((_, i) => {
+        const currentRate = i + 1;
+
         return (
           <Icon
             onClick={() => handleRate(i)}
             className={cn(
               "size-4",
-              i <= rate && className,
+              rate >= currentRate && `${className}`,
               editable && "cursor-pointer",
             )}
             key={i}

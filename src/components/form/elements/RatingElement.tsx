@@ -14,7 +14,6 @@ const RatingElement = (props: RatingElementProps) => {
   const [rate, setRate] = useState(0);
 
   const Icon = getRateIconByType(rate_type);
-  const className = getRateClassName(rate_type);
 
   return (
     <div className="flex items-center gap-1">
@@ -30,7 +29,7 @@ const RatingElement = (props: RatingElementProps) => {
             key={i}
             className={cn(
               "size-5 cursor-pointer stroke-1",
-              rate >= currentRate && className,
+              rate >= currentRate && getRateClassName(rate_type),
             )}
           />
         );
