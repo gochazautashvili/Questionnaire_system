@@ -8,14 +8,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { TStyles } from "@/lib/types";
+import { TStyles, TUploadImageButtonType } from "@/lib/types";
 import { PaintBucket } from "lucide-react";
 import ColorPickerCard from "./ColorPickerCard";
 import NumberInput from "@/components/NumberInput";
 import { Label } from "@/components/ui/label";
 import LoadingButton from "@/components/LoadingButton";
 import { useTransition } from "react";
-import { edit_form_styles } from "@/server/actions/form";
+import { edit_form_styles, upload_file } from "@/server/actions/form";
 import { toast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
@@ -28,6 +28,11 @@ interface StyleSheetProps {
     key: keyof TStyles;
     value: string | number;
   }) => void;
+}
+
+interface TOnUpload {
+  url: string;
+  type: TUploadImageButtonType;
 }
 
 const StyleSheet = ({ handleEditStyles, styles, formId }: StyleSheetProps) => {
@@ -43,6 +48,12 @@ const StyleSheet = ({ handleEditStyles, styles, formId }: StyleSheetProps) => {
         });
       });
     });
+  };
+
+  const onUpload = ({ type, url }: TOnUpload) => {
+    if (url === "" || !url) return;
+
+    upload_file({ formId, type, url }).then(() => {});
   };
 
   return (
@@ -173,9 +184,10 @@ const StyleSheet = ({ handleEditStyles, styles, formId }: StyleSheetProps) => {
             type="background_image"
             name="Background image"
             url={styles.background_image}
-            onUpload={(value: string) =>
-              handleEditStyles({ key: "background_image", value })
-            }
+            onUpload={(value: string) => {
+              handleEditStyles({ key: "background_image", value });
+              onUpload({ type: "background_image", url: value });
+            }}
           />
           <ImageUploadButton
             id={formId}
@@ -186,6 +198,7 @@ const StyleSheet = ({ handleEditStyles, styles, formId }: StyleSheetProps) => {
             url={styles.form_background_image}
             onUpload={(value: string) => {
               handleEditStyles({ key: "form_background_image", value });
+              onUpload({ type: "form_background_image", url: value });
             }}
           />
           <ImageUploadButton
@@ -197,6 +210,7 @@ const StyleSheet = ({ handleEditStyles, styles, formId }: StyleSheetProps) => {
             url={styles.logo}
             onUpload={(value: string) => {
               handleEditStyles({ key: "logo", value });
+              onUpload({ type: "logo", url: value });
             }}
           />
         </div>

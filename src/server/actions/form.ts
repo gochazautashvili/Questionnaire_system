@@ -1,6 +1,6 @@
 "use server";
 import { getErrorMessage } from "@/lib/utils";
-import { form_schema, TFormSchema, TUploadSchema } from "../validations";
+import { form_schema, TFormSchema } from "../validations";
 import {
   create_formDb,
   delete_imageDb,
@@ -46,6 +46,22 @@ export const create_form = async (props: TCreateForm) => {
   }
 };
 
+export const upload_file = async ({ formId, type, url }: TUploadFileDb) => {
+  try {
+    if (type === "background_image") await upload_backgroundDb({ formId, url });
+
+    if (type === "form_background_image") {
+      await upload_form_backgroundDb({ formId, url });
+    }
+
+    if (type === "logo") await upload_logoDb({ formId, url });
+
+    return { success: true, message: "success" };
+  } catch (error) {
+    return { success: false, message: getErrorMessage(error) };
+  }
+};
+
 // EDIT
 export const edit_form_header = async (props: TEditFormHeader) => {
   const { listId, type, value } = props;
@@ -74,33 +90,6 @@ export const edit_form_styles = async (props: TEditStyles) => {
     return { success: true, message: "Form styles successfully updated" };
   } catch (error) {
     return { success: false, message: getErrorMessage(error) };
-  }
-};
-
-export const upload_background = async ({ formId, url }: TUploadImage) => {
-  await upload_backgroundDb({ formId, url });
-};
-
-export const upload_form_background = async ({ formId, url }: TUploadImage) => {
-  await upload_form_backgroundDb({ formId, url });
-};
-
-export const upload_logo = async ({ formId, url }: TUploadImage) => {
-  await upload_logoDb({ formId, url });
-};
-
-export const upload_fileDb = async ({ data, url }: TUploadFileDb) => {
-  const { formId, type } = data;
-
-  switch (type) {
-    case "background":
-      return upload_background({ formId, url });
-    case "form_background":
-      return upload_form_background({ formId, url });
-    case "logo":
-      return upload_logo({ formId, url });
-    default:
-      return;
   }
 };
 
@@ -158,10 +147,6 @@ interface TEditFormHeader {
 
 interface TUploadFileDb {
   url: string;
-  data: TUploadSchema;
-}
-
-interface TUploadImage {
-  url: string;
   formId: string;
+  type: TUploadImageButtonType;
 }

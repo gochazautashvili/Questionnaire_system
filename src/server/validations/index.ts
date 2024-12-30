@@ -166,11 +166,3 @@ type TGeneratedFormSchema = Record<
   string,
   z.ZodString | z.ZodNumber | z.ZodDate | z.ZodArray<z.ZodString>
 >;
-
-// uploadthing
-export const uploadthing_schema = z.object({
-  type: z.enum(["background", "form_background", "logo", "list"]),
-  formId: z.string().min(1),
-});
-
-export type TUploadSchema = z.infer<typeof uploadthing_schema>;
