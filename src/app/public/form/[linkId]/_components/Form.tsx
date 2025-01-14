@@ -86,7 +86,7 @@ const Form = ({ link }: FormProps) => {
   return (
     <FormWrapper {...generatedForm}>
       <section
-        className="relative h-screen w-full py-10"
+        className="relative py-10"
         style={{ background: styles.background }}
       >
         {styles.background_image && (
@@ -97,84 +97,82 @@ const Form = ({ link }: FormProps) => {
             className="size-full object-cover"
           />
         )}
-        <div className="size-full px-4">
-          <form
-            className="relative mx-auto w-full max-w-[700px] overflow-hidden p-6"
-            onSubmit={generatedForm.handleSubmit(onSubmit)}
-            style={{
-              color: styles.text_color,
-              borderWidth: styles.border_size,
-              borderColor: styles.border_color,
-              background: styles.form_background,
-              borderRadius: styles.form_border_radius,
-            }}
-          >
-            {styles.form_background_image && (
-              <Image
-                fill
-                alt="Form Wallpaper"
-                src={styles.form_background_image}
-                className="size-full object-cover"
-              />
-            )}
-            {styles.logo && (
-              <Image
-                width={80}
-                height={80}
-                alt="Wallpaper"
-                src={styles.logo}
-                className="absolute left-4 top-4 z-20 size-10 object-cover"
-              />
-            )}
-            <div className="relative z-10 flex flex-col gap-4">
-              <div className="mb-4 text-center">
-                <h1
-                  style={{ fontSize: styles.title_size }}
-                  className="text-xl font-bold"
-                >
-                  {link.form.title}
-                </h1>
-                <p
-                  style={{ fontSize: styles.subtitle_size }}
-                  className="text-sm font-semibold opacity-80"
-                >
-                  {link.form.subtitle}
-                </p>
-              </div>
-              {link.form.columns.map((column) => {
-                return (
-                  <FormField
-                    key={column.id}
-                    name={column.id}
-                    control={generatedForm.control}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{column.name}</FormLabel>
-                        <FormControl>
-                          <FormElements
-                            type="Public"
-                            field={field}
-                            styles={styles}
-                            column={column}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                );
-              })}
-              <LoadingButton
-                style={{ background: styles.button_color }}
-                isLoading={generatedForm.formState.isSubmitting}
-                className="self-end"
-                type="submit"
+        <form
+          className="relative mx-auto w-full max-w-[700px] p-6"
+          onSubmit={generatedForm.handleSubmit(onSubmit)}
+          style={{
+            color: styles.text_color,
+            borderWidth: styles.border_size,
+            borderColor: styles.border_color,
+            background: styles.form_background,
+            borderRadius: styles.form_border_radius,
+          }}
+        >
+          {styles.form_background_image && (
+            <Image
+              fill
+              alt="Form Wallpaper"
+              src={styles.form_background_image}
+              className="size-full object-cover"
+            />
+          )}
+          {styles.logo && (
+            <Image
+              width={80}
+              height={80}
+              alt="Wallpaper"
+              src={styles.logo}
+              className="absolute left-4 top-4 z-20 size-10 object-cover"
+            />
+          )}
+          <div className="relative z-10 flex flex-col gap-4">
+            <div className="mb-4 text-center">
+              <h1
+                style={{ fontSize: styles.title_size }}
+                className="text-xl font-bold"
               >
-                {styles.button_text}
-              </LoadingButton>
+                {link.form.title}
+              </h1>
+              <p
+                style={{ fontSize: styles.subtitle_size }}
+                className="text-sm font-semibold opacity-80"
+              >
+                {link.form.subtitle}
+              </p>
             </div>
-          </form>
-        </div>
+            {link.form.columns.map((column) => {
+              return (
+                <FormField
+                  key={column.id}
+                  name={column.id}
+                  control={generatedForm.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{column.name}</FormLabel>
+                      <FormControl>
+                        <FormElements
+                          type="Public"
+                          field={field}
+                          styles={styles}
+                          column={column}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              );
+            })}
+            <LoadingButton
+              style={{ background: styles.button_color }}
+              isLoading={generatedForm.formState.isSubmitting}
+              className="self-end"
+              type="submit"
+            >
+              {styles.button_text}
+            </LoadingButton>
+          </div>
+        </form>
       </section>
     </FormWrapper>
   );

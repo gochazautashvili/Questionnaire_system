@@ -47,6 +47,7 @@ const FormElements = ({ column, field, styles, type }: FormElementsProps) => {
           border_color={styles.border_color}
           onChange={field?.onChange}
           choices={column.choices}
+          name={column.name}
         />
       );
     case "RATING":
@@ -82,6 +83,7 @@ const FormElements = ({ column, field, styles, type }: FormElementsProps) => {
     case "MULTIPLE_CHOICE":
       return (
         <MultipleChoiceElement
+          name={column.name}
           choices={column.choices}
           onChange={field?.onChange}
           border_color={styles.border_color}

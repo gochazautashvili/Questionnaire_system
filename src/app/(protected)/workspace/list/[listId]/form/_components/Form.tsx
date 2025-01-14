@@ -52,7 +52,7 @@ const Form = ({ form }: FormProps) => {
           className="size-full object-cover"
         />
       )}
-      <div className="relative">
+      <div className="relative h-full overflow-y-auto pb-5">
         <Navbar
           styles={styles}
           formId={form.id}

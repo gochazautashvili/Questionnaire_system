@@ -1,4 +1,4 @@
-import { Column, Prisma } from "@prisma/client";
+import { Choice, Column, Prisma } from "@prisma/client";
 
 export type TListData = {
   id: string;
@@ -9,6 +9,11 @@ export type TListData = {
 export type TListResponse = {
   data: TListData[];
   hasNextPage: boolean;
+};
+
+export type TMostSelectedOptions = Column & {
+  choices: Choice[];
+  choice_counts: Record<string, number>;
 };
 
 export const link_include = {
@@ -66,7 +71,7 @@ export type TMatrixContent = {
 };
 
 export type TRateDashboardData = Column & {
-  total_rate: number;
+  average_rating: number;
 };
 
 export type TUploadImageButtonType =

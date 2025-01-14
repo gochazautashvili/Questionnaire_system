@@ -2,13 +2,14 @@ import { Label } from "@/components/ui/label";
 import { Choice } from "@prisma/client";
 
 interface MultipleChoiceElementProps {
+  name: string;
   choices: Choice[];
   border_color: string;
   onChange?: () => void;
 }
 
 const MultipleChoiceElement = (props: MultipleChoiceElementProps) => {
-  const { choices, onChange, border_color } = props;
+  const { choices, onChange, border_color, name } = props;
 
   if (!choices.length) {
     return <p className="text-sm text-destructive">There is not any choice</p>;
@@ -19,8 +20,8 @@ const MultipleChoiceElement = (props: MultipleChoiceElementProps) => {
       {choices.map((choice) => (
         <div key={choice.id} className="flex items-center space-x-2">
           <input
+            name={name}
             id={choice.id}
-            name="checkbox"
             type="checkbox"
             title="checkbox"
             value={choice.id}

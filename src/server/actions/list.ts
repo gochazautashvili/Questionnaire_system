@@ -1,5 +1,10 @@
 "use server";
-import { getErrorMessage, parseJson } from "@/lib/utils";
+import {
+  calculateMostSelectedChoice,
+  calculateRating,
+  getErrorMessage,
+  parseJson,
+} from "@/lib/utils";
 import { column_schema, TColumnSchema, TList_schema } from "../validations";
 import {
   create_choiceDb,
@@ -16,43 +21,43 @@ import {
   edit_full_column,
   edit_listDb,
   edit_rowDb,
+  getColumnByType,
+  getColumnWithOptions,
   getListAllRow,
   getListColumns,
   getListCount,
   select_choiceDb,
 } from "../db/list";
 import { CACHE_TAGS, revalidateDbCache } from "@/lib/cache";
-import { TListData, TRateDashboardData } from "@/lib/types";
+import { TListData } from "@/lib/types";
 import { checkWhatUserCan, sendEmails } from "../helpers";
 import { getUserById } from "../db/user";
+import { ColumnType } from "@prisma/client";
 
 // GET
-export const getListRatingData = async (listId: string) => {
+export const getAverageRating = async ({ listId, type }: TGetAverageRating) => {
   try {
     const [columns, rows] = await Promise.all([
-      getListColumns(listId),
+      getColumnByType({ listId, type }),
       getListAllRow(listId),
     ]);
 
-    const data: TRateDashboardData[] = [];
+    const data = calculateRating({ columns, rows });
 
-    columns.forEach((column) => {
-      if (column.type === "RATING") {
-        let total_rate = 0;
+    return data;
+  } catch (_) {
+    return [];
+  }
+};
 
-        rows.forEach((row) => {
-          const content = parseJson<TRowContent>(row.content);
+export const getSelectedChoices = async (listId: string) => {
+  try {
+    const [columns, rows] = await Promise.all([
+      getColumnWithOptions(listId),
+      getListAllRow(listId),
+    ]);
 
-          if (!content) return;
-
-          const value = content[column.id];
-
-          if (typeof value === "number") total_rate += value;
-        });
-
-        data.push({ ...column, total_rate });
-      }
-    });
+    const data = calculateMostSelectedChoice({ columns, rows });
 
     return data;
   } catch (_) {
@@ -317,7 +322,10 @@ export const delete_column = async ({ columnId, listId }: TDeleteColumn) => {
 };
 
 // types
-type TRowContent = { [x: string]: string | number };
+interface TGetAverageRating {
+  listId: string;
+  type: ColumnType;
+}
 
 interface TCreateList {
   values: TList_schema;

@@ -2,12 +2,14 @@ import { Choice } from "@prisma/client";
 import { Label } from "../../ui/label";
 
 interface ChoiceElementProps {
+  name: string;
   choices: Choice[];
   border_color: string;
   onChange?: () => void;
 }
 
 const ChoiceElement = ({
+  name,
   choices,
   onChange,
   border_color,
@@ -23,7 +25,7 @@ const ChoiceElement = ({
           return (
             <div key={choice.id} className="flex items-center space-x-2">
               <input
-                name="radio"
+                name={name}
                 type="radio"
                 title="radio"
                 id={choice.id}

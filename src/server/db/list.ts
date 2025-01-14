@@ -2,6 +2,7 @@ import db from "@/lib/db";
 import { TColumnSchema, TList_schema } from "../validations";
 import { CACHE_TAGS, dbCache, getIdTag } from "@/lib/cache";
 import { TListData } from "@/lib/types";
+import { ColumnType } from "@prisma/client";
 
 // GET
 export const getLists = (workspaceId: string) => {
@@ -52,6 +53,17 @@ export const getChoices = (columnId: string) => {
 export const getListColumnsForForm = (listId: string) => {
   return db.column.findMany({
     where: { listId },
+  });
+};
+
+export const getColumnByType = ({ listId, type }: TGetColumnByType) => {
+  return db.column.findMany({ where: { type, listId } });
+};
+
+export const getColumnWithOptions = (listId: string) => {
+  return db.column.findMany({
+    where: { listId, type: "CHOICE" },
+    include: { choices: true },
   });
 };
 
@@ -230,6 +242,11 @@ const getListColumnsFn = (listId: string) => {
 };
 
 // types
+interface TGetColumnByType {
+  listId: string;
+  type: ColumnType;
+}
+
 interface TCreateList {
   values: TList_schema;
   workspaceId: string;
